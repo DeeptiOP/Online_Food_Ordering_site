@@ -4,55 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Checkout - Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="dark-theme">
-<header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
-
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#menu">Menu</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body>
+{% include '_navbar.html' %}
 
     
     <main class="cart-main">
         <div class="container cart-wrap">
             <h1 style="text-align:center; margin-bottom:45px;">Checkout</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="auth-flashes" aria-live="polite">
+                        {% for category, message in messages %}
+                            <li class="auth-flash {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
             <div class="cart-layout">
                 <section class="checkout-form">
                     <form method="post">
@@ -60,13 +34,13 @@
                             <h2 style="margin-bottom:12px;">Shipping details</h2>
 
                             <label for="name">Full name</label>
-                            <input id="name" name="name" required type="text" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;">
+                            <input id="name" name="name" autocomplete="name" value="{{ request.form.get('name', '') }}" required type="text" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;">
 
                             <label for="email">Email</label>
-                            <input id="email" name="email" required type="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;">
+                            <input id="email" name="email" autocomplete="email" value="{{ request.form.get('email', '') }}" required type="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;">
 
                             <label for="address">Delivery address</label>
-                            <textarea id="address" name="address" required rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;"></textarea>
+                            <textarea id="address" name="address" autocomplete="street-address" required rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e6;margin:8px 0 12px;">{{ request.form.get('address', '') }}</textarea>
 
                             <h3 style="margin-top:18px;">Payment</h3>
                             <div style="margin-bottom:12px;">

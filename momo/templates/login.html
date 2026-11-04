@@ -3,34 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login-Authentication</title>
+    <title>Log in | Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <ul class="flashes">
-                            {% for category, msg in messages %}
-                                <li class="flash {{ category }}">{{ msg }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endwith %}
-                {% if session.username %}
-                    <p>Signed in as <strong>{{ session.username }}</strong>. <a href="/profile">View profile</a> — <a href="/logout">Logout</a></p>
+    <header class="auth-header">
+        <a class="auth-brand" href="{{ url_for('index') }}">Momo Delights</a>
+    </header>
+    <main class="auth-main">
+        <section class="auth-intro" aria-labelledby="auth-heading">
+            <p class="auth-eyebrow">Good food, just a sign in away</p>
+            <h1 id="auth-heading">Welcome back.</h1>
+            <p>Sign in to pick up where you left off and enjoy your favorite momos.</p>
+        </section>
+        <section class="auth-card" aria-labelledby="form-heading">
+            <h2 id="form-heading">Log in</h2>
+            <p class="auth-subtitle">Enter your details to continue.</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="auth-flashes" aria-live="polite">
+                        {% for category, msg in messages %}
+                            <li class="auth-flash {{ category }}">{{ msg }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-        <form action="/login" method="POST">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+            {% endwith %}
+            {% if session.username %}
+                <p class="auth-signed-in">
+                    Signed in as <strong>{{ session.username }}</strong>.
+                    <a class="auth-inline-link" href="{{ url_for('profile') }}">View profile</a>
+                    or <a class="auth-inline-link" href="{{ url_for('logout') }}">log out</a>.
+                </p>
+            {% endif %}
+            <form class="auth-form" action="{{ url_for('login') }}" method="POST">
+                <div class="auth-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" placeholder="Your username" required>
+                </div>
+                <div class="auth-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Your password" required>
+                </div>
+                <button class="auth-submit" type="submit">Log in</button>
+            </form>
+            <p class="auth-switch">New to Momo Delights? <a href="{{ url_for('register') }}">Create an account</a></p>
+        </section>
+    </main>
 </body>
 </html>

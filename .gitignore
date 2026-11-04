@@ -49,6 +49,10 @@ htmlcov/
 # Netlify
 .netlify/
 
+# Next.js
+.next/
+out/
+
 # Node (if used)
 node_modules/
 npm-debug.log*

@@ -1,230 +1,151 @@
-/* Reset and base styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
+.veg-menu-page {
+    min-height: calc(100vh - 72px);
+    padding: 48px 20px 72px;
+    background: linear-gradient(180deg, var(--bg-darker), var(--bg));
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #e8e6e6; /* Dark background for better contrast */
-    /* Text color for better readability */
-}
-
-/* Header container */
-.container {
-    width: 100%;
-    height: 13vh;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgb(46, 46, 50);
-}
-
-.container h1{
-    color: aliceblue;
-}
-
-/* Logo styling */
-/* .logo {
-    background-image: url('amazon-logo.jpg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left center;
-    width: 150px;
-    height: 100%;
-} */
-
-
-/* Navigation styles */
-nav ul {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    gap: 20px;
-    font-size: 18px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    padding: 8px 12px;
-    color: antiquewhite;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-nav ul li a:hover {
-    background-color: #666;
-    text-decoration: underline;
-}
-
-/* Cart button styles */
-.cart-btn {
-    background: #ff9800;
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 16px;
-    transition: background 0.2s;
-}
-
-.cart-btn:hover {
-    background: #e65100;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-
-    nav ul {
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .logo {
-        width: 100px;
-        height: 50px;
-        margin-bottom: 10px;
-    }
-}
-
-/* .list-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 80%;
-    border: 2px solid black;
-    border-radius: 10px;
-    height: 80vh;
-    margin: 110px;
-}
-
-.list-container ul {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 10px;
-}
-
-.list-container ul li{
-    list-style: none;
-    width: 100px;
-    height: 20vh;
-    border: 2px solid black;
-    margin: 10px;
-    padding: 16px;
-} */
-
-/* Add to your style.css or veg_momo.css */
-/* .momo-item {
-    display: flex;
-    align-items: center;
-    background: #fff8e1;
-    border-radius: 10px;
-    padding: 10px 16px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-.momo-item img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-right: 16px;
-}
-
-.momo-item span {
-    font-size: 1.1em;
-    color: #333;
-    font-family: 'Segoe UI', Arial, sans-serif;
-} */
-
-main h1 {
+.veg-menu-page > h1 {
+    margin: 0 auto 32px;
+    color: var(--text);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    line-height: 1.15;
     text-align: center;
-    margin: 40px 0 20px;
-    font-size: 2rem;
-    color: #e64a19;
 }
 
-/* Momo list grid */
 .momo-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    max-width: 1150px;
-    margin: 67px auto 115px;
-    padding: 0 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 24px;
+    width: min(100%, 1120px);
+    margin: 0 auto;
+    padding: 0;
     list-style: none;
 }
 
-/* Individual momo item */
 .momo-item {
-    background-color: #fff3e0;
-    border-radius: 12px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    padding: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    background: var(--card);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .momo-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
 }
 
-.momo-item img {
+.momo-item > img {
     width: 100%;
-    height: 150px;
+    height: 190px;
+    border-radius: 11px;
     object-fit: cover;
-    border-radius: 10px;
 }
 
-.momo-item span {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #bf360c;
+.momo-item > span {
+    flex: 1;
+    margin: 16px 2px 12px;
+    color: var(--text);
+    font-size: 1.08rem;
+    font-weight: 700;
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    padding: 15px;
-    background-color: #ffe0b2;
-    color: #5d4037;
+.momo-item .cart form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.momo-item .cart label {
+    color: var(--text-secondary);
     font-size: 0.9rem;
-    margin-top: 20px;
 }
 
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: flex-start;
+.momo-item .cart input[type="number"] {
+    width: 58px;
+    min-height: 38px;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 7px;
+    background: var(--bg-darker);
+    color: var(--text);
+}
+
+.momo-item .cart-btn {
+    min-height: 38px;
+    margin-left: auto;
+    border: 0;
+    background: var(--primary);
+    color: #202020;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 8px 14px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.momo-item .cart-btn:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
+}
+
+.veg-menu-page > .btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin: 28px 8px 0 0;
+    padding: 10px 18px;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.veg-menu-page > .btn:first-of-type {
+    margin-left: max(0px, calc((100% - 1120px) / 2));
+}
+
+.veg-menu-page > .btn:focus-visible,
+.momo-item .cart-btn:focus-visible,
+.momo-item input:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.veg-menu-page + footer {
+    margin: 0;
+    background: var(--bg-darker);
+    color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+    .veg-menu-page {
+        padding: 36px 16px 52px;
     }
 
-    nav ul {
-        flex-direction: column;
-        width: 100%;
-        padding-top: 10px;
+    .momo-list {
+        gap: 16px;
     }
 
-    nav ul li {
-        margin-bottom: 10px;
+    .momo-item > img {
+        height: 210px;
+    }
+
+    .veg-menu-page > .btn:first-of-type {
+        margin-left: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .momo-item {
+        transition: none;
     }
 }

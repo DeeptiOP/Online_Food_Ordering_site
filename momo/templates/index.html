@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="Momo Delights - handcrafted momos, fresh ingredients, quick service.">
@@ -12,45 +15,7 @@
 </head>
 
 <body>
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
-
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#menu">Menu</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+    {% include '_navbar.html' %}
 
     <main>
         <section id="home" class="hero">
@@ -111,10 +76,10 @@
                 
 
                 <div class="menu-grid">
-                    <!-- Show a curated selection on the homepage (first 6 items) -->
+                    <!-- Featured items from the full menu -->
                     <div class="menu-item" data-type="veg paneer">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format" alt="Steamed Veg Momos" loading="lazy">
+                            <img src="{{ cloud_image('classic_momo.jpg') }}" alt="Steamed Veg Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Steamed Veg Momos</h3>
@@ -128,7 +93,7 @@
 
                     <div class="menu-item" data-type="veg paneer">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1609167830220-7164aa360951?w=500&auto=format" alt="Paneer Momos" loading="lazy">
+                            <img src="{{ cloud_image('cheese_momo.jpg') }}" alt="Paneer Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Paneer Momos</h3>
@@ -142,7 +107,7 @@
 
                     <div class="menu-item" data-type="veg special">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=500&auto=format" alt="Cheese Corn Momos" loading="lazy">
+                            <img src="{{ cloud_image('cheese_corn.jpg') }}" alt="Cheese Corn Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Cheese Corn Momos</h3>
@@ -156,7 +121,7 @@
 
                     <div class="menu-item" data-type="nonveg chicken">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&auto=format" alt="Classic Chicken Momos" loading="lazy">
+                            <img src="{{ cloud_image('chicken_steam.jpg') }}" alt="Classic Chicken Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Classic Chicken Momos</h3>
@@ -170,7 +135,7 @@
 
                     <div class="menu-item" data-type="nonveg chicken special">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=500&auto=format" alt="Butter Chicken Momos" loading="lazy">
+                            <img src="{{ cloud_image('butter_chicken.jpg') }}" alt="Butter Chicken Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Butter Chicken Momos</h3>
@@ -184,17 +149,62 @@
 
                     <div class="menu-item" data-type="special">
                         <div class="menu-item-image">
-                            <img src="https://images.unsplash.com/photo-1630409351241-e90e7f5e434d?w=500&auto=format" alt="Tandoori Momos" loading="lazy">
+                            <img src="{{ cloud_image('tandoori_momo.jpg') }}" alt="Tandoori Momos" loading="lazy">
                         </div>
                         <div class="menu-item-content">
                             <h3>Tandoori Momos</h3>
                             <p>Grilled momos with smoky tandoori marinade.</p>
                             <div class="menu-item-footer">
                                 <span class="price">₹200</span>
-                                <a class="btn" href="/menu">See Full Menu</a>
+                                <button class="btn-cart" data-id="tandoori" data-price="200">Add to Cart <i class="fas fa-cart-plus"></i></button>
                             </div>
                         </div>
                     </div>
+
+                    <div class="menu-item" data-type="veg special">
+                        <div class="menu-item-image">
+                            <img src="{{ cloud_image('schezwan_momo.jpg') }}" alt="Schezwan Veg Momos" loading="lazy">
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Schezwan Veg Momos</h3>
+                            <p>Veg momos tossed in a bold, spicy Schezwan sauce.</p>
+                            <div class="menu-item-footer">
+                                <span class="price">₹160</span>
+                                <button class="btn-cart" data-id="schezwan-veg" data-price="160">Add to Cart <i class="fas fa-cart-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-type="veg special">
+                        <div class="menu-item-image">
+                            <img src="{{ cloud_image('gravy_momo.jpg') }}" alt="Gravy Veg Momos" loading="lazy">
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Gravy Veg Momos</h3>
+                            <p>Soft vegetable momos served in a rich, spiced gravy.</p>
+                            <div class="menu-item-footer">
+                                <span class="price">₹160</span>
+                                <button class="btn-cart" data-id="gravy-veg" data-price="160">Add to Cart <i class="fas fa-cart-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item" data-type="veg special">
+                        <div class="menu-item-image">
+                            <img src="{{ cloud_image('jhol_momo.jpg') }}" alt="Jhol Veg Momos" loading="lazy">
+                        </div>
+                        <div class="menu-item-content">
+                            <h3>Jhol Veg Momos</h3>
+                            <p>Steamed momos served with a warm, tangy jhol broth.</p>
+                            <div class="menu-item-footer">
+                                <span class="price">₹170</span>
+                                <button class="btn-cart" data-id="jhol-veg" data-price="170">Add to Cart <i class="fas fa-cart-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-actions">
+                    <a class="btn" href="{{ url_for('menu_page') }}">See Full Menu</a>
                 </div>
             </div>
         </section>
@@ -223,16 +233,52 @@
             </div>
         </section>
 
-        <section class="testimonials">
+        <section class="testimonials" aria-labelledby="testimonials-title">
             <div class="container">
                 <div class="description">
-                    <h2>What our customers say</h2>
+                    <h2 id="testimonials-title">What our customers say</h2>
                     <hr>
+                    <p>A few words from people who have visited us.</p>
                 </div>
-                <div class="testimonials-slider" id="testimonials">
-                    <blockquote class="testimonial">"The momos here are absolutely delicious! I come here at least once a week."<footer>— John</footer></blockquote>
-                    <blockquote class="testimonial">"The chicken momos are juicy and full of flavor."<footer>— Jane</footer></blockquote>
-                    <blockquote class="testimonial">"Great variety and consistent taste every time."<footer>— Emily</footer></blockquote>
+                <div class="testimonials-grid">
+                    <article class="testimonial">
+                        <div class="testimonial-meta">
+                            <span class="testimonial-rating" aria-label="Rated 5 out of 5">★★★★★</span>
+                            <span class="testimonial-rating-value">5.0</span>
+                        </div>
+                        <blockquote>Fresh, tasty momos and hospitable staff.</blockquote>
+                        <footer><span class="reviewer-avatar" aria-hidden="true">S</span><span class="reviewer-details"><strong>Savina</strong><span>Customer review</span></span></footer>
+                    </article>
+                    <article class="testimonial">
+                        <div class="testimonial-meta">
+                            <span class="testimonial-rating" aria-label="Rated 5 out of 5">★★★★★</span>
+                            <span class="testimonial-rating-value">5.0</span>
+                        </div>
+                        <blockquote>Good food, plenty of options and quick service.</blockquote>
+                        <footer><span class="reviewer-avatar" aria-hidden="true">IB</span><span class="reviewer-details"><strong>Ishaan Bakshi</strong><span>Customer review</span></span></footer>
+                    </article>
+                    <article class="testimonial">
+                        <div class="testimonial-meta">
+                            <span class="testimonial-rating" aria-label="Rated 5 out of 5">★★★★★</span>
+                            <span class="testimonial-rating-value">5.0</span>
+                        </div>
+                        <blockquote>Described them as the best momos in Panchkula.</blockquote>
+                        <footer><span class="reviewer-avatar" aria-hidden="true">NJ</span><span class="reviewer-details"><strong>Nitin Jaiswal</strong><span>Customer review</span></span></footer>
+                    </article>
+                    <article class="testimonial">
+                        <div class="testimonial-meta">
+                            <span class="testimonial-sentiment positive">Positive feedback</span>
+                        </div>
+                        <blockquote>Momos prepared and organised hygienically.</blockquote>
+                        <footer><span class="reviewer-avatar" aria-hidden="true">RM</span><span class="reviewer-details"><strong>RUCHI MANGAL</strong><span>Customer review</span></span></footer>
+                    </article>
+                    <article class="testimonial">
+                        <div class="testimonial-meta">
+                            <span class="testimonial-sentiment mixed">Mixed feedback</span>
+                        </div>
+                        <blockquote>Enjoyed the momos, especially gyoza, and suggested improvements to the ambience.</blockquote>
+                        <footer><span class="reviewer-avatar" aria-hidden="true">TL</span><span class="reviewer-details"><strong>Tavleen Lamba</strong><span>Customer review</span></span></footer>
+                    </article>
                 </div>
             </div>
         </section>

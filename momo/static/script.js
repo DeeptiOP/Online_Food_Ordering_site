@@ -5,19 +5,40 @@ document.addEventListener('DOMContentLoaded', function () {
 	if (navToggle && siteNav) {
 		navToggle.addEventListener('click', () => {
 			const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-			navToggle.setAttribute('aria-expanded', String(!expanded));
-			siteNav.classList.toggle('open');
+			const isOpen = !expanded;
+			navToggle.setAttribute('aria-expanded', String(isOpen));
+			navToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+			navToggle.title = isOpen ? 'Close navigation menu' : 'Open navigation menu';
+			navToggle.innerHTML = `<span class="sr-only">${isOpen ? 'Close navigation menu' : 'Open navigation menu'}</span><i class="fas ${isOpen ? 'fa-times' : 'fa-bars'}" aria-hidden="true"></i>`;
+			siteNav.classList.toggle('open', isOpen);
+		});
+
+		const closeNav = () => {
+			navToggle.setAttribute('aria-expanded', 'false');
+			navToggle.setAttribute('aria-label', 'Open navigation menu');
+			navToggle.title = 'Open navigation menu';
+			navToggle.innerHTML = '<span class="sr-only">Open navigation menu</span><i class="fas fa-bars" aria-hidden="true"></i>';
+			siteNav.classList.remove('open');
+		};
+
+		siteNav.addEventListener('click', event => {
+			if (event.target.closest('a')) closeNav();
+		});
+		document.addEventListener('click', event => {
+			if (!siteNav.contains(event.target) && !navToggle.contains(event.target)) closeNav();
+		});
+		document.addEventListener('keydown', event => {
+			if (event.key === 'Escape') closeNav();
+		});
+		window.addEventListener('resize', () => {
+			if (window.innerWidth > 900) closeNav();
 		});
 	}
 
 	// Enhanced menu filtering with multiple categories + cross-page behavior
 	const chips = document.querySelectorAll('.chip');
 	const items = document.querySelectorAll('.menu-item');
-	const menuGrid = document.querySelector('.menu-grid');
 	const isMenuPage = window.location.pathname === '/menu' || window.location.pathname.endsWith('/menu');
-
-	if (chips.length === 0) console.warn('No menu filter chips found');
-	if (items.length === 0) console.warn('No menu items found to filter');
 
 	// store original chip labels so we can append counts
 	chips.forEach(c => {
@@ -175,36 +196,57 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	// Shopping cart functionality
+	function readSavedCart() {
+		try {
+			const saved = JSON.parse(localStorage.getItem('cart') || '[]');
+			return Array.isArray(saved) ? saved : [];
+		} catch (error) {
+			console.error('Unable to read the saved cart:', error);
+			return [];
+		}
+	}
+
 	const cart = {
-		items: JSON.parse(localStorage.getItem('cart') || '[]'),
+		items: readSavedCart(),
 		
 		async addItem(id, name, price, image = '') {
+			const previousItems = this.items.map(item => ({ ...item }));
 			const existingItem = this.items.find(item => item.id === id);
 			if (existingItem) {
 				existingItem.quantity += 1;
 			} else {
 				this.items.push({ id, name, price, image, quantity: 1 });
 			}
-			await this.save();
+			try {
+				await this.save();
+			} catch (error) {
+				this.items = previousItems;
+				try {
+					localStorage.setItem('cart', JSON.stringify(this.items));
+				} catch (storageError) {
+					console.error('Failed to restore the previous cart:', storageError);
+				}
+				throw error;
+			}
 			this.updateUI();
 		},
 		
 		async save() {
-			localStorage.setItem('cart', JSON.stringify(this.items));
+			try {
+				localStorage.setItem('cart', JSON.stringify(this.items));
+			} catch (err) {
+				throw new Error(`Failed to save cart locally: ${err.message}`);
+			}
 			
 			// Sync with server
-			try {
-				const response = await fetch('/cart', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(this.items)
-				});
-				if (!response.ok) throw new Error('Failed to sync cart');
-			} catch (err) {
-				console.error('Cart sync failed:', err);
-			}
+			const response = await fetch('/cart', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(this.items)
+			});
+			if (!response.ok) throw new Error('Failed to sync cart with the server');
 		},
 		
 		updateUI() {
@@ -223,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			if (cartCount) {
 				const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
 				cartCount.textContent = totalItems;
+				cartCount.hidden = totalItems === 0;
 				cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
 			}
 		},
@@ -255,15 +298,25 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.querySelectorAll('.btn-cart').forEach(button => {
 		button.addEventListener('click', async (e) => {
 			const item = e.target.closest('.menu-item');
-			const name = item.querySelector('h3').textContent;
+			if (!item) return;
+			const name = item.querySelector('h3')?.textContent?.trim();
+			if (!name) return;
 			const id = e.target.closest('.btn-cart').dataset.id;
 			const price = parseFloat(e.target.closest('.btn-cart').dataset.price);
+			const image = item.querySelector('img')?.getAttribute('src') || '';
 
 			// await the add so localStorage/server sync completes before navigating
 			try {
-				await cart.addItem(id, name, price);
+				await cart.addItem(id, name, price, image);
 			} catch (err) {
 				console.error('Failed to add item before redirect:', err);
+				const notification = document.createElement('div');
+				notification.className = 'cart-notification';
+				notification.setAttribute('role', 'alert');
+				notification.textContent = 'Could not save your cart. Please try again.';
+				document.body.appendChild(notification);
+				setTimeout(() => notification.remove(), 3000);
+				return;
 			}
 
 			// Button click animation
@@ -276,49 +329,37 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
-	// Simple testimonial rotation
-	const slider = document.getElementById('testimonials');
-	if (slider) {
-		let idx = 0;
-		const slides = Array.from(slider.querySelectorAll('.testimonial'));
-		if (slides.length > 0) {
-			slides.forEach((s, i) => s.style.display = i === 0 ? 'block' : 'none');
-			setInterval(() => {
-				slides[idx].style.display = 'none';
-				idx = (idx + 1) % slides.length;
-				slides[idx].style.display = 'block';
-			}, 4000);
-		}
-	}
-
-	// Theme toggle: persist selection and default to dark on homepage
+	// Theme toggle: persist the selected palette across pages.
 	const themeToggle = document.getElementById('theme-toggle');
 	const body = document.body;
 
 	function applyTheme(name){
-		if(name === 'dark'){
+		const isDark = name === 'dark';
+		if(isDark){
 			body.classList.add('dark-theme');
-			if(themeToggle) themeToggle.setAttribute('aria-pressed','true');
-			if(themeToggle) themeToggle.innerHTML = '<span class="sr-only">Toggle dark theme</span><i class="fas fa-sun"></i>';
 		} else {
 			body.classList.remove('dark-theme');
-			if(themeToggle) themeToggle.setAttribute('aria-pressed','false');
-			if(themeToggle) themeToggle.innerHTML = '<span class="sr-only">Toggle dark theme</span><i class="fas fa-moon"></i>';
+		}
+		if(themeToggle) {
+			themeToggle.setAttribute('aria-pressed', String(isDark));
+			themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+			themeToggle.title = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+			themeToggle.innerHTML = `<span class="sr-only">${isDark ? 'Switch to light theme' : 'Switch to dark theme'}</span><i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}" aria-hidden="true"></i>`;
 		}
 	}
 
-	// initialize theme: priority localStorage, then homepage default, else light
+	// Honor the saved choice; otherwise use the light theme.
 	(function initTheme(){
-		const stored = localStorage.getItem('theme');
-		if(stored){
+		let stored = null;
+		try {
+			stored = localStorage.getItem('theme');
+		} catch (error) {
+			console.error('Unable to read the saved theme:', error);
+		}
+		if(stored === 'dark' || stored === 'light'){
 			applyTheme(stored);
 		} else {
-			// default to dark on pages that include #home section (homepage)
-			if(document.getElementById('home')){
-				applyTheme('dark');
-			} else {
-				applyTheme('light');
-			}
+			applyTheme('light');
 		}
 	})();
 
@@ -327,7 +368,11 @@ document.addEventListener('DOMContentLoaded', function () {
 			const isDark = body.classList.contains('dark-theme');
 			const next = isDark ? 'light' : 'dark';
 			applyTheme(next);
-			localStorage.setItem('theme', next);
+			try {
+				localStorage.setItem('theme', next);
+			} catch (error) {
+				console.error('Unable to save the selected theme:', error);
+			}
 		});
 	}
 });

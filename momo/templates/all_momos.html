@@ -4,53 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Momos - Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="dark-theme">
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
-
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="#menu">Menu</a></li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body>
+    {% include '_navbar.html' %}
 
     <main>
         <section class="menu" id="menu">
@@ -71,13 +32,13 @@
                 <div class="menu-grid">
                     <!-- Full menu — replicate the items from the homepage plus extras -->
                     <div class="menu-item" data-type="veg paneer">
-                        <div class="menu-item-image"><img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format" alt="Steamed Veg Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('classic_momo.jpg') }}" alt="Steamed Veg Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Steamed Veg Momos</h3><p>Classic steamed momos with mixed vegetables and herbs.</p>
                         <div class="menu-item-footer"><span class="price">₹120</span><button class="btn-cart go-cart" data-id="steamed-veg" data-price="120" data-redirect="true">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>
 
                     <div class="menu-item" data-type="veg paneer">
-                        <div class="menu-item-image"><img src="{{ cloud_image('classic_momo.jpg') }}" alt="Paneer Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('cheese_momo.jpg') }}" alt="Paneer Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Paneer Momos</h3><p>Stuffed with spiced paneer and fresh herbs.</p>
                         <div class="menu-item-footer"><span class="price">₹160</span><button class="btn-cart go-cart" data-id="paneer" data-price="160" data-redirect="true">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>
@@ -107,7 +68,7 @@
                     </div>
 
                     <div class="menu-item" data-type="veg paneer special">
-                        <div class="menu-item-image"><img src="{{ cloud_image('achari_momo.jpg') }}" alt="Achari Paneer Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('classic_momo.jpg') }}" alt="Achari Paneer Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Achari Paneer Momos</h3><p>Spiced paneer with pickle-inspired seasoning.</p>
                         <div class="menu-item-footer"><span class="price">₹190</span><button class="btn-cart" data-id="achari-paneer" data-price="190">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>
@@ -125,7 +86,7 @@
                     </div>
 
                     <div class="menu-item" data-type="special nonveg chicken">
-                        <div class="menu-item-image"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&auto=format" alt="Thai Chicken Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('chilli_momo.jpg') }}" alt="Thai Chicken Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Thai Chicken Momos</h3><p>Thai-spiced chicken with lemongrass and basil.</p>
                         <div class="menu-item-footer"><span class="price">₹210</span><button class="btn-cart go-cart" data-id="thai-chicken" data-price="210" data-redirect="true">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>
@@ -145,7 +106,7 @@
                     </div>
 
                     <div class="menu-item" data-type="veg">
-                        <div class="menu-item-image"><img src="{{ cloud_image('Fried_momo.jpg') }}" alt="Fried Veg Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('fried_veg.jpg') }}" alt="Fried Veg Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Fried Veg Momos</h3><p>Crispy shallow-fried vegetable momos.</p>
                         <div class="menu-item-footer"><span class="price">₹140</span><button class="btn-cart" data-id="fried-veg" data-price="140">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>
@@ -181,7 +142,7 @@
                     </div>
 
                     <div class="menu-item" data-type="veg special">
-                        <div class="menu-item-image"><img src="{{ cloud_image('kurkure_momo.jpg') }}" alt="Kurkure Veg Momos" loading="lazy"></div>
+                        <div class="menu-item-image"><img src="{{ cloud_image('kurkure_veg.jpg') }}" alt="Kurkure Veg Momos" loading="lazy"></div>
                         <div class="menu-item-content"><h3>Kurkure Veg Momos</h3><p>Crunchy kurkure-coated veg momos for extra bite.</p>
                         <div class="menu-item-footer"><span class="price">₹180</span><button class="btn-cart" data-id="kurkure-veg" data-price="180">Add to Cart <i class="fas fa-cart-plus"></i></button></div></div>
                     </div>

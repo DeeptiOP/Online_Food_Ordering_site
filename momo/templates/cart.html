@@ -1,117 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Your Cart - Momo Delights</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <style>
-            /* Cart page alignment fix */
-            main.cart-main {
-                padding-top: 100px;
-                min-height: 80vh;
-                background: transparent;
-            }
-            .cart-container {
-                margin: 0 auto 40px auto !important;
-                max-width: 700px;
-            }
-            @media (max-width: 800px) {
-                .cart-container { max-width: 98vw; }
-            }
-        </style>
-    </head>
-<body class="dark-theme">
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
-            
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your cart | Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    {% include '_navbar.html' %}
 
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/menu">Menu</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link active">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">{{ cart_items|length }}</span>
-                        </a>
-                    </li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class="cart-main">
-        <div class="container">
-            <h1 class="cart-title" style="margin-bottom: 32px; text-align: center;">Your Cart</h1>
+    <main id="cart-page" class="cart-main">
+        <div class="container cart-wrap">
+            <h1 class="cart-title">Your cart</h1>
+            <script id="server-cart-data" type="application/json">{{ cart_items|tojson }}</script>
             {% if cart_items %}
-            <div class="cart-container" style="background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px 24px 24px 24px;">
-                <ul class="cart-list" style="margin-bottom: 0;">
-                    {% for item in cart_items %}
-                    <li class="cart-item" data-id="{{ item.id }}" style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px; background: #fff8e1; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 16px 18px;">
-                        <div class="item-image" style="flex-shrink: 0;">
-                            <img src="{{ cloud_image(item.image) }}" alt="{{ item.name }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                <div class="cart-container">
+                    <ul class="cart-list">
+                        {% for item in cart_items %}
+                            <li class="cart-item" data-id="{{ item.id }}" data-price="{{ item.price }}">
+                                <div class="item-image">
+                                    <img src="{{ cloud_image(item.image) }}" alt="{{ item.name }}">
+                                </div>
+                                <div class="item-details">
+                                    <h2>{{ item.name }}</h2>
+                                    <p class="price">₹{{ "%.2f"|format(item.price) }} each</p>
+                                </div>
+                                <div class="item-controls">
+                                    <div class="quantity-controls" aria-label="Quantity for {{ item.name }}">
+                                        <button class="quantity-btn minus" type="button" aria-label="Decrease {{ item.name }} quantity">−</button>
+                                        <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="99" inputmode="numeric" aria-label="{{ item.name }} quantity">
+                                        <button class="quantity-btn plus" type="button" aria-label="Increase {{ item.name }} quantity">+</button>
+                                    </div>
+                                    <strong class="item-total">₹{{ "%.2f"|format(item.price * item.quantity) }}</strong>
+                                    <button class="remove-item" type="button" aria-label="Remove {{ item.name }} from cart">Remove</button>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <aside class="cart-summary">
+                        <h2>Order summary</h2>
+                        <div class="subtotal-row"><span>Subtotal</span><strong class="subtotal-value">₹{{ "%.2f"|format(subtotal) }}</strong></div>
+                        <div class="delivery-row"><span>Delivery</span><strong class="delivery-value">₹{{ "%.2f"|format(delivery_fee) }}</strong></div>
+                        <div class="total-row"><span>Total</span><strong class="total-value">₹{{ "%.2f"|format(total) }}</strong></div>
+                        <p class="free-delivery-note">
+                            {% if free_delivery_remaining > 0 %}
+                                Add ₹{{ "%.2f"|format(free_delivery_remaining) }} more for free delivery.
+                            {% else %}
+                                Free delivery applied.
+                            {% endif %}
+                        </p>
+                        <div class="cart-actions">
+                            <form action="{{ url_for('clear_cart') }}" method="post">
+                                <button type="submit" class="btn btn-clear">Clear cart</button>
+                            </form>
+                            <a href="{{ url_for('checkout') }}" class="btn btn-checkout">Continue to checkout</a>
                         </div>
-                        <div class="item-details" style="flex: 1;">
-                            <h3 style="margin: 0 0 6px 0; font-size: 1.1em; color: #bf360c;">{{ item.name }}</h3>
-                            <div class="price" style="color: #666; font-size: 1em;">${{ "%.2f"|format(item.price) }}</div>
-                        </div>
-                        <div class="item-controls" style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                            <div class="quantity-controls" style="display: flex; align-items: center; gap: 6px;">
-                                <button class="quantity-btn minus" style="width: 28px; height: 28px; border-radius: 50%; background: #ffe0b2; border: none; font-size: 1.2em; cursor: pointer;">-</button>
-                                <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="99" style="width: 40px; text-align: center; border: 1px solid #ccc; border-radius: 6px; padding: 2px 0;">
-                                <button class="quantity-btn plus" style="width: 28px; height: 28px; border-radius: 50%; background: #ffe0b2; border: none; font-size: 1.2em; cursor: pointer;">+</button>
-                            </div>
-                            <div class="item-total" style="font-weight: bold; color: #4CAF50;">${{ "%.2f"|format(item.price * item.quantity) }}</div>
-                            <button class="remove-item" aria-label="Remove {{ item.name }} from cart" style="background: none; border: none; color: #e65100; font-size: 1.5em; cursor: pointer;">×</button>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <div class="cart-summary" style="margin-top: 24px; display: flex; flex-direction: column; align-items: flex-end;">
-                    <div class="cart-total" style="font-size: 1.2em; margin-bottom: 12px;">
-                        <span>Total:</span>
-                        <strong>${{ "%.2f"|format(total) }}</strong>
-                    </div>
-                        <div class="cart-actions" style="display: flex; gap: 16px;">
-                        <a href="{{ url_for('clear_cart') }}" class="btn clear-cart" style="background: #e65100; color: #fff; border-radius: 6px; padding: 10px 20px; text-decoration: none;">Clear Cart</a>
-                        <a href="{{ url_for('checkout') }}" class="btn btn-checkout" style="background: #ff9800; color: #fff; border-radius: 6px; padding: 10px 20px; text-decoration: none;">Proceed to Checkout</a>
-                    </div>
+                    </aside>
                 </div>
-            </div>
             {% else %}
-            <div class="empty-cart" style="text-align: center; color: #999; margin-top: 60px; font-size: 1.2em;">
-                <p>Your cart is empty</p>
-                <a href="{{ url_for('menu_page') }}" class="btn" style="background: #ff9800; color: #fff; border-radius: 6px; padding: 10px 20px; text-decoration: none;">View Menu</a>
-            </div>
+                <div class="empty-cart">
+                    <h2>Your cart is empty</h2>
+                    <p>Browse the menu and add something delicious.</p>
+                    <a href="{{ url_for('menu_page') }}" class="btn btn-checkout">Browse menu</a>
+                </div>
             {% endif %}
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Momo Shop</p>
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>&copy; 2025 Momo Delights</p>
+        </div>
     </footer>
     <script src="{{ url_for('static', filename='cart.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

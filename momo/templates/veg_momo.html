@@ -4,49 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veg Momos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='veg_momo.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="dark-theme">
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
+<body>
+    {% include '_navbar.html' %}
 
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/menu">Menu</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
+    <main class="veg-menu-page">
     <h1>Veg Momos</h1>
     <ul class="momo-list">
         <li>
@@ -54,12 +22,13 @@
                 <img src="{{ cloud_image('classic_momo.jpg') }}" alt="Classic Veg Momo">
                 <span>Classic Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="classic-veg-momo">
                         <input type="hidden" name="item_name" value="Classic Veg Momo">
                         <input type="hidden" name="item_image" value="classic_momo.jpg">
                         <input type="hidden" name="item_price" value="8.99">
                         <label for="qty-classic" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-classic" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-classic" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>       
@@ -67,15 +36,16 @@
         </li>
         <li>
             <div class="momo-item">
-                <img src="{{ cloud_image('chilli_momo.jpg') }}" alt="Spicy Veg Momo">
+                <img src="{{ cloud_image('chilli_veg.jpg') }}" alt="Chilli Veg Momo">
                 <span>Chilli Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="chilli-veg-momo">
                         <input type="hidden" name="item_name" value="Chilli Veg Momo">
-                        <input type="hidden" name="item_image" value="chilli_momo.jpg">
+                        <input type="hidden" name="item_image" value="chilli_veg.jpg">
                         <input type="hidden" name="item_price" value="9.49">
                         <label for="qty-spicy" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-spicy" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-spicy" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -86,12 +56,13 @@
                 <img src="{{ cloud_image('cheese_momo.jpg') }}" alt="Cheese Veg Momo">
                 <span>Cheese Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="cheese-veg-momo">
                         <input type="hidden" name="item_name" value="Cheese Veg Momo">
                         <input type="hidden" name="item_image" value="cheese_momo.jpg">
                         <input type="hidden" name="item_price" value="10.49">
                         <label for="qty-cheese" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-cheese" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-cheese" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -99,15 +70,16 @@
         </li>
         <li>
             <div class="momo-item">
-                <img src="{{ cloud_image('fried_momo.jpg') }}" alt="Fried Veg Momo">
+                <img src="{{ cloud_image('fried_veg.jpg') }}" alt="Fried Veg Momo">
                 <span>Fried Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="fried-veg-momo">
                         <input type="hidden" name="item_name" value="Fried Veg Momo">
-                        <input type="hidden" name="item_image" value="momos/fried.jpg">
+                        <input type="hidden" name="item_image" value="fried_veg.jpg">
                         <input type="hidden" name="item_price" value="9.99">
                         <label for="qty-fried" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-fried" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-fried" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -115,15 +87,16 @@
         </li>
         <li>
             <div class="momo-item">
-                <img src="{{ cloud_image('kurkure_momo.jpg') }}" alt="Kurkure Veg Momo">
+                <img src="{{ cloud_image('kurkure_veg.jpg') }}" alt="Kurkure Veg Momo">
                 <span>Kurkure Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="kurkure-veg-momo">
                         <input type="hidden" name="item_name" value="Kurkure Veg Momo">
-                        <input type="hidden" name="item_image" value="kurkure_momo.jpg">
+                        <input type="hidden" name="item_image" value="kurkure_veg.jpg">
                         <input type="hidden" name="item_price" value="11.49">
                         <label for="qty-kurkure" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-kurkure" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-kurkure" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -132,14 +105,15 @@
         <li>
             <div class="momo-item">
                 <img src="{{ cloud_image('gravy_momo.jpg') }}" alt="Gravy Veg Momo">
-                <span>Paneer Veg Momo</span>
+                <span>Gravy Veg Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="gravy-veg-momo">
                         <input type="hidden" name="item_name" value="Gravy Veg Momo">
                         <input type="hidden" name="item_image" value="gravy_momo.jpg">
                         <input type="hidden" name="item_price" value="10.99">
-                        <label for="qty-paneer" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-paneer" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <label for="qty-gravy" style="margin-right: 6px;">Qty:</label>
+                        <input type="number" id="qty-gravy" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -147,15 +121,16 @@
         </li>
         <li>
             <div class="momo-item">
-                <img src="{{ cloud_image('schezwan_momo.jpg') }}" alt="Steamed dumplings filled with paneer and vegetables arranged on a white plate with spicy red schezwan sauce in a small bowl beside them on a wooden table in a bright and inviting restaurant setting">
+                <img src="{{ cloud_image('schezwan_momo.jpg') }}" alt="Schezwan Paneer Momo">
                 <span>Schezwan Paneer Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="schezwan-paneer-momo">
                         <input type="hidden" name="item_name" value="Schezwan Paneer Momo">
                         <input type="hidden" name="item_image" value="schezwan_momo.jpg">
                         <input type="hidden" name="item_price" value="11.99">
                         <label for="qty-schezwan" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-schezwan" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <input type="number" id="qty-schezwan" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -166,12 +141,13 @@
                 <img src="{{ cloud_image('jhol_momo.jpg') }}" alt="Jhol momo">
                 <span>Jhol Momo</span>
                 <div class="cart">
-                    <form action="/cart" method="post" style="display: flex; align-items: center;">
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <input type="hidden" name="item_id" value="jhol-momo">
                         <input type="hidden" name="item_name" value="Jhol Momo">
                         <input type="hidden" name="item_image" value="jhol_momo.jpg">
                         <input type="hidden" name="item_price" value="12.49">
-                        <label for="qty-fried" style="margin-right: 6px;">Qty:</label>
-                        <input type="number" id="qty-fried" name="quantity" value="1" min="1" style="width: 50px; margin-right: 8px;">
+                        <label for="qty-jhol" style="margin-right: 6px;">Qty:</label>
+                        <input type="number" id="qty-jhol" name="quantity" value="1" min="1" max="99">
                         <button type="submit" class="btn cart-btn">Add to Cart</button>
                     </form>
                 </div>
@@ -179,13 +155,16 @@
         </li>
     </ul>
     
-    <a href="{{ url_for('cart') }}" class="btn cart-btn" style="margin-left:20px;">Go to Cart</a>
-    <a href="{{ url_for('clear_cart') }}" class="btn cart-btn" style="margin-left:20px;background:#e65100;">Clear Cart</a>
+    <a href="{{ url_for('cart') }}" class="btn cart-btn">Go to Cart</a>
+    <form action="{{ url_for('clear_cart') }}" method="post" style="display:inline;">
+        <button type="submit" class="btn cart-btn">Clear Cart</button>
+    </form>
 
     </main>
 
     <footer>
         <p>&copy; 2023 Momo Shop</p>
     </footer>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,39 @@
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="{{ url_for('index') }}">
+            <h1>Momo Delights</h1>
+        </a>
+        <nav id="site-navigation" class="site-nav" aria-label="Main navigation">
+            <ul>
+                <li><a href="{{ url_for('index') }}#home" {% if request.path == '/' %}aria-current="page"{% endif %}>Home</a></li>
+                <li><a href="{{ url_for('index') }}#about">About</a></li>
+                <li><a href="{{ url_for('menu_page') }}" {% if request.path == '/menu' %}aria-current="page"{% endif %}>Menu</a></li>
+                <li><a href="{{ url_for('veg_momo') }}" {% if request.path == '/veg_momo' %}aria-current="page"{% endif %}>Vegetarian</a></li>
+                <li><a href="{{ url_for('index') }}#contact">Contact</a></li>
+                <li>
+                    <a href="{{ url_for('cart') }}" class="cart-link" {% if request.path == '/cart' %}aria-current="page"{% endif %}>
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                        {% set cart_count = session.get('cart_items', [])|sum(attribute='quantity') %}
+                        <span class="cart-count" {% if cart_count == 0 %}hidden{% endif %}>{{ cart_count }}</span>
+                        <span class="sr-only">Cart</span>
+                    </a>
+                </li>
+                {% if session.username %}
+                    <li class="nav-profile"><a href="{{ url_for('profile') }}"><i class="fas fa-user-circle" aria-hidden="true"></i> {{ session.username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">Log out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" {% if request.path == '/login' %}aria-current="page"{% endif %}>Log in</a></li>
+                    <li><a href="{{ url_for('register') }}" class="btn-outline" {% if request.path == '/register' %}aria-current="page"{% endif %}>Sign up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <button id="theme-toggle" class="nav-toggle theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" title="Switch to dark theme">
+            <span class="sr-only">Switch to dark theme</span>
+            <i class="fas fa-moon" aria-hidden="true"></i>
+        </button>
+        <button id="nav-toggle" class="nav-toggle menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="Open navigation menu">
+            <span class="sr-only">Open navigation menu</span>
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+    </div>
+</header>

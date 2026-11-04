@@ -4,51 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Order Placed - Momo Delights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="dark-theme">
-    <header class="site-header">
-        <div class="container header-inner">
-            <a class="brand" href="/">
-                <h1>Momo Delights</h1>
-            </a>
-
-            <button id="nav-toggle" aria-expanded="false" aria-controls="site-navigation" class="nav-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Theme toggle -->
-            <button id="theme-toggle" class="nav-toggle" aria-pressed="false" title="Toggle theme">
-                <span class="sr-only">Toggle dark theme</span>
-                <i class="fas fa-moon"></i>
-            </button>
-
-            <nav id="site-navigation" class="site-nav" role="navigation">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/menu">Menu</a></li>
-                    <li>
-                        <a href="/cart" class="cart-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
-                    {% if session.username %}
-                    <li class="nav-profile"><a href="/profile"><i class="fas fa-user-circle"></i> {{ session.username }}</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                    {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register" class="btn-outline">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body>
+    {% include '_navbar.html' %}
 
     <main style="padding: 100px 20px; text-align:center;">
-        <div style="max-width:700px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+        <div class="order-success-card" style="max-width:700px;margin:0 auto;background:#fff;padding:32px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);">
             <h1>Thank you — your order is placed!</h1>
             <p style="color:#555;margin-top:12px;">We received your order and will start preparing it soon.</p>
             <div style="margin-top:18px;text-align:left">
@@ -66,5 +32,6 @@
             <a href="/" class="btn" style="margin-top:18px;display:inline-block;background:#ff9800;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;">Back to home</a>
         </div>
     </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
